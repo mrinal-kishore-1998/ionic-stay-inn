@@ -1,0 +1,7 @@
+{
+  "name": "ionic-stay-inn",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
