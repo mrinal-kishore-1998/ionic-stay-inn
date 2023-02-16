@@ -5,17 +5,72 @@ import { PlacesPage } from './places.page';
 
 const routes: Routes = [
   {
+    path: 'tabs',
+    component: PlacesPage,
+    children: [
+      {
+        path: 'discover',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('./discover/discover.module').then(
+                (m) => m.DiscoverPageModule
+              ),
+          },
+          {
+            path: ':placeID',
+            loadChildren: () =>
+              import('./discover/place-detail/place-detail.module').then(
+                (m) => m.PlaceDetailPageModule
+              ),
+          },
+        ],
+      },
+      {
+        path: 'offers',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('./offers/offers.module').then((m) => m.OffersPageModule),
+          },
+          {
+            path: 'new-offer',
+            loadChildren: () =>
+              import('./offers/new-offer/new-offer.module').then(
+                (m) => m.NewOfferPageModule
+              ),
+          },
+          // Hard-coded path should be place first then the dynamic paths
+          {
+            path: 'edit/:placeID',
+            loadChildren: () =>
+              import('./offers/edit-offer/edit-offer.module').then(
+                (m) => m.EditOfferPageModule
+              ),
+          },
+          {
+            path: ':placeID',
+            loadChildren: () =>
+              import('./offers/offer-bookings/offer-bookings.module').then(
+                (m) => m.OfferBookingsPageModule
+              ),
+          },
+        ],
+      },
+      {
+        path: '',
+        redirectTo: '/places/tabs/discover',
+        pathMatch: 'full',
+      },
+    ],
+  },
+  {
     path: '',
-    component: PlacesPage
+    redirectTo: '/places/tabs/discover',
+    pathMatch: 'full',
   },
-  {
-    path: 'discover',
-    loadChildren: () => import('./discover/discover.module').then( m => m.DiscoverPageModule)
-  },
-  {
-    path: 'offers',
-    loadChildren: () => import('./offers/offers.module').then( m => m.OffersPageModule)
-  }
 ];
 
 @NgModule({
