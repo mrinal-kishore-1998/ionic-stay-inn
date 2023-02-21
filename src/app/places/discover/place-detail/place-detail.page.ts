@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import {
+  AlertController,
+  ModalController,
+  NavController,
+} from '@ionic/angular';
+import { OverlayEventDetail } from '@ionic/core/components';
+
 import { Place } from '../../place.model';
 import { PlacesService } from '../../places.service';
+import { CreateBookingComponent } from '../../../bookings/create-booking/create-booking.component';
 
 @Component({
   selector: 'app-place-detail',
@@ -15,7 +22,9 @@ export class PlaceDetailPage implements OnInit {
   constructor(
     private navCtrl: NavController,
     private activatedRoute: ActivatedRoute,
-    private placeService: PlacesService
+    private placeService: PlacesService,
+    private modalCtrl: ModalController,
+    private alertCtrl: AlertController
   ) {}
 
   ngOnInit() {
@@ -31,8 +40,26 @@ export class PlaceDetailPage implements OnInit {
   /**
    * onBookPlace() is used to book the place
    */
-  public onBookPlace() {
+  onBookPlace() {
     // this.router.navigateByUrl('/places/tabs/discover');    this uses a forward navigation animation
-    this.navCtrl.navigateBack('/places/tabs/discover');
+    // this.navCtrl.navigateBack('/places/tabs/discover');
+
+    this.modalCtrl
+      .create({
+        component: CreateBookingComponent,
+        componentProps: {
+          selectedPlace: this.place,
+        },
+      })
+      .then((modalEle) => {
+        modalEle.present();
+        return modalEle.onDidDismiss();
+      })
+      .then((resultData) => {
+        console.log(resultData.data, resultData.role);
+        if (resultData.role === 'confirm') {
+          console.log('BOOKED!!!');
+        }
+      });
   }
 }
